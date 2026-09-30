@@ -28,6 +28,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 import { runSipEngine } from "./services/sip/sip.engine.js";
 
 app.get("/api/cron/sip", async (req, res) => {
