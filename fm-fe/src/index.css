@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-dash-bg: var(--bg);
+  --color-dash-header: var(--header);
+  --color-dash-card: var(--card);
+  --color-dash-elevated: var(--elevated);
+  --color-dash-border: var(--border);
+  
+  --color-dash-text-primary: var(--text-primary);
+  --color-dash-text-secondary: var(--text-secondary);
+  --color-dash-text-muted: var(--text-muted);
+}
+
+:root {
+  --bg: #F8FAFC;
+  --header: #FFFFFF;
+  --card: #FFFFFF;
+  --elevated: #F1F5F9;
+  --border: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+}
+
+:root.dark {
+  --bg: #0B1220;
+  --header: #111A2B;
+  --card: #151F30;
+  --elevated: #1A2638;
+  --border: #263449;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+}
+
+body {
+  @apply bg-dash-bg text-dash-text-primary font-sans;
+}
+
+/* Hide TradingView watermarks and marketing text */
+.tradingview-widget-copyright {
+  display: none !important;
+}
+iframe[title="stock widget"] {
+  margin-bottom: -32px !important; /* Some widgets leave a gap for copyright */
+}

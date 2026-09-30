@@ -1,0 +1,20 @@
+# Sensitive information
+.env
+.env.*
+client_secret_*.json
+*.pem
+*.key
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+.pnp
+.pnp.js
+
+# OS and Editor files
+.DS_Store
+.vscode/
+.idea/
+*.log
+test_post.js
