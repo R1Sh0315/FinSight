@@ -31,8 +31,8 @@ export const addToWatchlist = async (req: AuthRequest, res: Response) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user.watchlist.includes(symbol.toUpperCase())) {
-      user.watchlist.push(symbol.toUpperCase());
+    if (!user.watchlist.includes(String(symbol).toUpperCase())) {
+      user.watchlist.push(String(symbol).toUpperCase());
       await user.save();
     }
 
@@ -49,7 +49,7 @@ export const removeFromWatchlist = async (req: AuthRequest, res: Response) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.watchlist = user.watchlist.filter(s => s !== symbol.toUpperCase());
+    user.watchlist = user.watchlist.filter(s => s !== String(symbol).toUpperCase());
     await user.save();
 
     res.json({ message: "Removed from watchlist", data: user.watchlist });

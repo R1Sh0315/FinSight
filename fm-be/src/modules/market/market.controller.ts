@@ -69,7 +69,6 @@ export const getLivePrices = async (req: Request, res: Response) => {
 };
 
 import Groq from 'groq-sdk';
-import { Request, Response } from 'express';
 import Parser from 'rss-parser';
 
 const parser = new Parser({
@@ -1025,9 +1024,9 @@ export const searchSymbols = async (req: Request, res: Response) => {
 
     if (yahooResults.status === 'fulfilled' && yahooResults.value.quotes) {
       const eq = yahooResults.value.quotes
-        .filter(q => q.isYahooFinance)
+        .filter((q: any) => q.isYahooFinance)
         .slice(0, 5)
-        .map(q => ({
+        .map((q: any) => ({
           symbol: q.symbol.replace('.NS', ''),
           name: q.shortname || q.longname,
           assetClass: 'Indian Equity'
