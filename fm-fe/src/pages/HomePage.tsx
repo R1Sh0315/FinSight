@@ -630,7 +630,7 @@ export default function HomePage() {
                           )}
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-right text-dash-text-primary tabular-nums font-medium">{inv.shares}</td>
+                      <td className="py-4 px-4 text-right text-dash-text-primary tabular-nums font-medium">{Number(inv.shares).toLocaleString(undefined, { maximumFractionDigits: 3 })}</td>
                       <td className="py-4 px-4 text-right tabular-nums">
                         <div className="text-dash-text-primary font-medium tracking-wide whitespace-nowrap">
                           ₹{inv.averagePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -668,10 +668,10 @@ export default function HomePage() {
                           </div>
                         ) : (
                           <>
-                            <div className={`font-[500] tracking-wide ${inv.pnl > 0 ? 'text-green-500' : inv.pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
+                            <div className={`font-[500] tracking-wide whitespace-nowrap ${inv.pnl > 0 ? 'text-green-500' : inv.pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
                               {inv.pnl > 0 ? '+' : ''}₹{inv.pnl.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
-                            <div className={`text-[12px] font-medium tracking-wide mt-0.5 ${inv.pnlPercent > 0 ? 'text-green-500/90' : inv.pnlPercent < 0 ? 'text-red-500/90' : 'text-dash-text-muted'}`}>
+                            <div className={`text-[12px] font-medium tracking-wide whitespace-nowrap mt-0.5 ${inv.pnlPercent > 0 ? 'text-green-500/90' : inv.pnlPercent < 0 ? 'text-red-500/90' : 'text-dash-text-muted'}`}>
                               {inv.pnlPercent > 0 ? '+' : ''}{inv.pnlPercent.toFixed(2)}%
                             </div>
                           </>
