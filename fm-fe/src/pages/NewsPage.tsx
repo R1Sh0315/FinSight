@@ -111,9 +111,9 @@ export default function NewsPage() {
                             <span className="text-[12px] font-medium text-blue-500 bg-blue-500/10 px-2 py-1 rounded">
                               {item.source}
                             </span>
-                            {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-green-500" title="Positive Sentiment" />}
-                            {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-red-500" title="Negative Sentiment" />}
-                            {item.sentiment === 'neutral' && <Minus className="w-4 h-4 text-dash-text-muted" title="Neutral Sentiment" />}
+                            {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-green-500" />}
+                            {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-red-500" />}
+                            {item.sentiment === 'neutral' && <Minus className="w-4 h-4 text-dash-text-muted" />}
                           </div>
                           <span className="text-[12px] text-dash-text-muted">
                             {new Date(item.pubDate).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -184,7 +184,6 @@ export default function NewsPage() {
               colorTheme={theme} 
               isTransparent={false}
               importanceFilter="-1,0,1"
-              currencyFilter="USD,EUR,GBP,INR,JPY"
               height="100%"
               width="100%"
             />

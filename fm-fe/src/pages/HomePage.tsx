@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { 
   useGetInvestmentsQuery, 
   useAddInvestmentMutation,
@@ -17,7 +17,7 @@ import {
 import { TrendingUp, Briefcase, Wallet, PieChart, Activity, Search, Plus, X, BarChart2, Info, Edit2, ExternalLink, Sparkles, Loader2, MoreVertical, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import TradingViewWidget from '../components/TradingViewWidget';
+
 import AdvancedChartWidget from '../components/AdvancedChartWidget';
 
 export default function HomePage() {
@@ -87,11 +87,7 @@ export default function HomePage() {
   const investments = investmentsData?.data || [];
   const [updateInvestment, { isLoading: updatingInvestment }] = useUpdateInvestmentMutation();
 
-  // Format watchlist for TradingView widget: [ ["Name", "EXCHANGE:SYMBOL|1D"] ]
-  const tvSymbols: [string, string][] = watchlist.map((company: any) => [
-    company.name,
-    `BSE:${company.symbol}|1D`
-  ]);
+
 
   const handleAddWatchlist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,6 +126,8 @@ export default function HomePage() {
         tradeType: 'Delivery', 
         shares: '', 
         averagePrice: '',
+        manualCurrentPrice: '',
+        dateInvested: new Date().toISOString().split('T')[0],
         sipFrequency: 'Monthly',
         sipAmount: '',
         isAmcSip: false,

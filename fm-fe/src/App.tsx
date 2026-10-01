@@ -13,8 +13,9 @@ import { LogOut, User as UserIcon, Moon, Sun } from 'lucide-react';
 import React from 'react';
 import { TickerTape } from "react-ts-tradingview-widgets";
 
-// A wrapper to protect routes
-function PrivateRoute({ children }: { children: JSX.Element }) {
+// A wrapper to protect routesimport React from 'react';
+
+function PrivateRoute({ children }: { children: React.ReactNode }) {
   const token = useSelector((state: RootState) => state.auth.token);
   return token ? children : <Navigate to="/login" replace />;
 }

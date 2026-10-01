@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo } from 'react';
+import { useEffect, useRef, memo } from 'react';
 
 interface TradingViewWidgetProps {
   symbols: [string, string][]; // e.g. [["Apple", "NASDAQ:AAPL|1D"]]
@@ -18,8 +18,6 @@ function TradingViewWidget({ symbols }: TradingViewWidgetProps) {
     script.type = "text/javascript";
     script.async = true;
     
-    // Determine theme from document class
-    const isDark = document.documentElement.classList.contains('dark');
     
     const config = {
       "lineWidth": 2,
