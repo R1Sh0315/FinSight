@@ -69,6 +69,13 @@ export const api = createApi({
       }),
       invalidatesTags: ['Investments'],
     }),
+    deleteInvestment: builder.mutation<{ message: string }, string>({
+      query: (id) => ({
+        url: `investments/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Investments'],
+    }),
     getWatchlist: builder.query<{ data: any[] }, void>({
       query: () => 'auth/watchlist',
       providesTags: ['Watchlist'],
@@ -127,6 +134,7 @@ export const {
   useGetInvestmentsQuery,
   useAddInvestmentMutation,
   useUpdateInvestmentMutation,
+  useDeleteInvestmentMutation,
   useGetWatchlistQuery,
   useAddToWatchlistMutation,
   useRemoveFromWatchlistMutation,

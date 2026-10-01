@@ -9,12 +9,13 @@ import {
   useGetAllCompaniesQuery,
   useGetTopCompaniesQuery,
   useUpdateInvestmentMutation,
+  useDeleteInvestmentMutation,
   useGetLivePricesQuery,
   useAnalyzeCompanyMutation,
   useSearchSymbolsQuery,
   useLazyGetAnnualReportQuery
 } from '../store/api';
-import { TrendingUp, Briefcase, Wallet, PieChart, Activity, Search, Plus, X, BarChart2, Info, Edit2, ExternalLink, Sparkles, Loader2, MoreVertical, Download } from 'lucide-react';
+import { TrendingUp, Briefcase, Wallet, PieChart, Activity, Search, Plus, X, BarChart2, Info, Edit2, ExternalLink, Sparkles, Loader2, MoreVertical, Download, MinusCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -87,7 +88,28 @@ export default function HomePage() {
   const investments = investmentsData?.data || [];
   const [updateInvestment, { isLoading: updatingInvestment }] = useUpdateInvestmentMutation();
 
+  const [deleteInvestment] = useDeleteInvestmentMutation();
+  const [sellModalData, setSellModalData] = useState<{ id: string, symbol: string, totalShares: number, averagePrice: number, sharesToSell: number | '' } | null>(null);
 
+  const handleSellSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sellModalData || !sellModalData.sharesToSell) return;
+    try {
+      const sellAmount = Number(sellModalData.sharesToSell);
+      if (sellAmount >= sellModalData.totalShares) {
+        await deleteInvestment(sellModalData.id).unwrap();
+      } else {
+        await updateInvestment({
+          id: sellModalData.id,
+          shares: sellModalData.totalShares - sellAmount,
+          averagePrice: sellModalData.averagePrice
+        }).unwrap();
+      }
+      setSellModalData(null);
+    } catch (err) {
+      console.error("Failed to sell investment");
+    }
+  };
 
   const handleAddWatchlist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -680,7 +702,22 @@ export default function HomePage() {
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
-                          
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSellModalData({
+                                id: inv._id,
+                                symbol: inv.symbol,
+                                totalShares: inv.shares,
+                                averagePrice: inv.averagePrice,
+                                sharesToSell: inv.shares
+                              });
+                            }} 
+                            className="p-1.5 text-dash-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors" 
+                            title="Sell / Withdraw"
+                          >
+                            <MinusCircle className="w-4 h-4" />
+                          </button>
                           {inv.assetClass !== 'Mutual Fund' && (
                             <div className="relative">
                               <button 
@@ -964,6 +1001,59 @@ export default function HomePage() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* SELL MODAL */}
+      {sellModalData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-dash-card border border-dash-border rounded-xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-4 border-b border-dash-border flex justify-between items-center bg-dash-header">
+              <h2 className="text-[16px] font-semibold text-dash-text-primary flex items-center gap-2">
+                <MinusCircle className="w-5 h-5 text-red-500" />
+                Sell {sellModalData.symbol}
+              </h2>
+              <button 
+                onClick={() => setSellModalData(null)}
+                className="text-dash-text-muted hover:text-dash-text-primary transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSellSubmit} className="p-6">
+              <div className="mb-4">
+                <label className="block text-[13px] font-medium text-dash-text-secondary mb-2">
+                  Units to Sell (Max: {sellModalData.totalShares})
+                </label>
+                <input 
+                  type="number" 
+                  step="any"
+                  min="0.0001"
+                  max={sellModalData.totalShares}
+                  required
+                  value={sellModalData.sharesToSell}
+                  onChange={e => setSellModalData({...sellModalData, sharesToSell: e.target.value === '' ? '' : Number(e.target.value)})}
+                  className="w-full px-3 py-2 bg-dash-bg border border-dash-border rounded-lg text-dash-text-primary focus:outline-none focus:border-red-500 transition-colors"
+                  placeholder="Enter units"
+                />
+              </div>
+              <div className="flex gap-3 justify-end mt-6">
+                <button 
+                  type="button"
+                  onClick={() => setSellModalData(null)}
+                  className="px-4 py-2 bg-dash-elevated hover:bg-dash-border text-dash-text-primary rounded-lg transition-colors text-[14px] font-medium border border-dash-border"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-red-500/20 text-red-500 hover:bg-red-500/30 rounded-lg transition-colors text-[14px] font-medium border border-red-500/20"
+                >
+                  Confirm Sell
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
