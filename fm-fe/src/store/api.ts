@@ -16,7 +16,7 @@ export interface ForecastResult {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: import.meta.env.VITE_API_URL || 'https://fin-sight-3ybshc1rv-r1sh0315s-projects.vercel.app/api/v1/',
+    baseUrl: import.meta.env.VITE_API_URL || 'https://fin-sight-gules.vercel.app/api/v1/',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
       if (token) {
