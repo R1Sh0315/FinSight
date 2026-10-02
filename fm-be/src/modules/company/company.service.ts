@@ -26,22 +26,43 @@ export const getTopCompanies = async (limit: number = 10) => {
   return Company.find().sort({ marketCap: -1 }).limit(limit);
 };
 
+import yahooFinanceDefault from 'yahoo-finance2';
+const yahooFinance = new (yahooFinanceDefault as any)();
+
 export const getCompanyFinancials = async (symbol: string) => {
-  // TODO: Implement real financial data integration
-  // Options:
-  // 1. Yahoo Finance API (already used for prices) - has some financial metrics
-  // 2. Finnhub API - comprehensive financial data for Indian stocks
-  // 3. Screener.in scraping - extract from company pages
-  // 4. PDF parsing of annual reports - extract from company annual reports
-  // For now, return only the company's basic info without mock financial data
   const company = await getCompanyBySymbol(symbol);
   if (!company) return null;
 
-  return {
-    symbol: symbol.toUpperCase(),
-    name: company.name,
-    exchange: company.exchange,
-    // Real financial metrics should be fetched from external API
-    message: "Financial data integration in progress"
-  };
+  try {
+    const lookupSymbol = symbol.includes('.') ? symbol : `${symbol}.NS`;
+    const quoteSummary = await yahooFinance.quoteSummary(lookupSymbol, { 
+      modules: ['financialData', 'defaultKeyStatistics'] 
+    });
+
+    const finData = quoteSummary.financialData || {};
+    const keyStats = quoteSummary.defaultKeyStatistics || {};
+
+    return {
+      symbol: symbol.toUpperCase(),
+      name: company.name,
+      exchange: company.exchange,
+      revenue: finData.totalRevenue || null,
+      netIncome: keyStats.netIncomeToCommon || null,
+      peRatio: keyStats.forwardPE || keyStats.trailingPE || null,
+      debtToEquity: finData.debtToEquity || null,
+      message: "Success"
+    };
+  } catch (error) {
+    console.error(`Failed to fetch financial data for ${symbol}:`, error);
+    return {
+      symbol: symbol.toUpperCase(),
+      name: company.name,
+      exchange: company.exchange,
+      revenue: null,
+      netIncome: null,
+      peRatio: null,
+      debtToEquity: null,
+      message: "Failed to fetch real-time financial data"
+    };
+  }
 };
