@@ -20,6 +20,53 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return token ? children : <Navigate to="/login" replace />;
 }
 
+// Market status indicator component
+function MarketStatus() {
+  const [isIndianMarketOpen, setIsIndianMarketOpen] = React.useState(false);
+  const [isGlobalMarketOpen, setIsGlobalMarketOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMarketStatus = () => {
+      const now = new Date();
+      // UTC time
+      const day = now.getUTCDay();
+      const hour = now.getUTCHours();
+      const minute = now.getUTCMinutes();
+      
+      // Indian Market: 9:15 AM IST to 3:30 PM IST (Mon-Fri)
+      // IST is UTC+5:30. 9:15 AM IST = 3:45 AM UTC. 3:30 PM IST = 10:00 AM UTC.
+      const isWeekday = day >= 1 && day <= 5;
+      const timeInMinutesUTC = hour * 60 + minute;
+      const isIndianOpen = isWeekday && (timeInMinutesUTC >= (3 * 60 + 45) && timeInMinutesUTC < (10 * 60));
+      setIsIndianMarketOpen(isIndianOpen);
+
+      // Global Forex: closed from Friday 21:00 UTC to Sunday 21:00 UTC
+      let isForexOpen = true;
+      if (day === 5 && timeInMinutesUTC >= 21 * 60) isForexOpen = false; // Friday after 21:00 UTC
+      if (day === 6) isForexOpen = false; // Saturday
+      if (day === 0 && timeInMinutesUTC < 21 * 60) isForexOpen = false; // Sunday before 21:00 UTC
+      setIsGlobalMarketOpen(isForexOpen);
+    };
+
+    checkMarketStatus();
+    const interval = setInterval(checkMarketStatus, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="hidden lg:flex items-center gap-4 mr-2 pr-4 border-r border-dash-border">
+      <div className="flex items-center gap-1.5" title={isIndianMarketOpen ? "Indian Market (NSE/BSE) is Open" : "Indian Market is Closed"}>
+        <div className={`w-2 h-2 rounded-full ${isIndianMarketOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+        <span className="text-[12px] font-medium text-dash-text-secondary">India (NSE/BSE)</span>
+      </div>
+      <div className="flex items-center gap-1.5" title={isGlobalMarketOpen ? "Global Forex Market is Open" : "Global Forex Market is Closed"}>
+        <div className={`w-2 h-2 rounded-full ${isGlobalMarketOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+        <span className="text-[12px] font-medium text-dash-text-secondary">Global (Forex)</span>
+      </div>
+    </div>
+  );
+}
+
 // The main layout with Nav and Dark mode toggle
 function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -62,6 +109,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           </div>
           
           <div className="flex items-center gap-5">
+            <MarketStatus />
             <button 
               onClick={() => setDarkMode(!darkMode)}
               className="p-2 rounded-full text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-all"
