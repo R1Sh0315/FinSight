@@ -8,6 +8,7 @@ import forecastRoutes from "./modules/forecasting/forecasting.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import investmentRoutes from "./modules/investment/investment.routes.js";
 import marketRoutes from "./modules/market/market.routes.js";
+import forexRoutes from "./modules/forex/forex.routes.js";
 
 dotenv.config();
 
@@ -59,6 +60,7 @@ app.use("/api/v1/companies", companyRoutes);
 app.use("/api/v1/forecast", forecastRoutes);
 app.use("/api/v1/investments", investmentRoutes);
 app.use("/api/v1/market", marketRoutes);
+app.use("/api/v1/forex", forexRoutes);
 
 const PORT = process.env.PORT || 5000;
 

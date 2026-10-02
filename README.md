@@ -1,15 +1,18 @@
 # FinSight
 
-FinSight is an AI-powered financial market intelligence platform featuring real-time data analysis, stock screening, intelligent forecasting, and portfolio planning.
+FinSight is an AI-powered financial market intelligence platform featuring real-time data analysis, stock screening, intelligent forecasting, and portfolio planning with support for Indian equities, mutual funds, and forex trading.
 
 ## 🚀 Features
 
 - **Dashboard**: Real-time market visualization utilizing advanced TradingView charts.
 - **Stock Screener**: Automated screening tools to filter the market for optimal investments.
+- **Forex Trading**: Live forex rates for major pairs (EURUSD, GBPUSD, USDINR, etc.) with economic impact analysis.
 - **AI-Powered Insights**: Integrated with Groq LLMs to generate intelligent financial market summaries, news sentiment analysis, and forecasting.
 - **Systematic Investment Plan (SIP) Engine**: Tools to plan, track, and forecast your SIPs.
-- **Market News**: Real-time aggregation of financial news through RSS parsing and web scraping.
+- **Market News**: Real-time aggregation from 5+ Indian and 4+ global financial news sources.
+- **Economic Calendar**: Track global economic events impacting forex and equity markets.
 - **Google Authentication**: Secure login and portfolio tracking using Google OAuth.
+- **No Mock Data**: Production-ready with all real data sources (Yahoo Finance, Screener.in, mfapi.in, News APIs).
 
 ## 🛠️ Tech Stack
 

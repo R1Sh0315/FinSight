@@ -163,7 +163,11 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1234567890-mockclientid.apps.googleusercontent.com';
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  if (!clientId) {
+    throw new Error('VITE_GOOGLE_CLIENT_ID is not configured. Please set it in your .env file.');
+  }
 
   return (
     <Provider store={store}>

@@ -8,24 +8,16 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export const googleLogin = async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
-    
-    // In dev mode without a client ID, we can mock verification for testing
-    let payload;
-    if (process.env.GOOGLE_CLIENT_ID) {
-      const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      payload = ticket.getPayload();
-    } else {
-      // Mock payload for testing without setting up Google Console
-      payload = {
-        sub: "mock_google_id_123",
-        email: "test@example.com",
-        name: "Test User",
-        picture: "https://via.placeholder.com/150",
-      };
+
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(500).json({ message: "GOOGLE_CLIENT_ID is not configured in the backend" });
     }
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
 
     if (!payload) return res.status(401).json({ message: "Invalid token payload" });
 

@@ -97,7 +97,9 @@ export const getIndianNews = async (req: Request, res: Response) => {
     const feeds = [
       { url: 'https://www.moneycontrol.com/rss/business.xml', source: 'Moneycontrol' },
       { url: 'https://economictimes.indiatimes.com/markets/rssfeeds/2146842.cms', source: 'Economic Times' },
-      { url: 'https://www.livemint.com/rss/markets', source: 'LiveMint' }
+      { url: 'https://www.livemint.com/rss/markets', source: 'LiveMint' },
+      { url: 'https://feeds.business-standard.com/markets/', source: 'Business Standard' },
+      { url: 'https://bsense.tickertape.in/rss.xml', source: 'Tickertape' }
     ];
 
     const allNewsPromises = feeds.map(async (feedInfo) => {
@@ -134,6 +136,54 @@ export const getIndianNews = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Failed to fetch Indian news:", error);
     res.status(500).json({ message: "Failed to fetch Indian news" });
+  }
+};
+
+export const getGlobalNews = async (req: Request, res: Response) => {
+  try {
+    // Global financial news sources including forex
+    const feeds = [
+      { url: 'https://feeds.bloomberg.com/markets/news.rss', source: 'Bloomberg Markets' },
+      { url: 'https://feeds.reuters.com/reuters/businessNews', source: 'Reuters Business' },
+      { url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html', source: 'CNBC' },
+      { url: 'https://feeds.finance.yahoo.com/', source: 'Yahoo Finance' }
+    ];
+
+    const allNewsPromises = feeds.map(async (feedInfo) => {
+      try {
+        const feed = await parser.parseURL(feedInfo.url);
+        return feed.items.slice(0, 5).map(item => {
+          const desc = item.description?.replace(/<[^>]*>?/gm, '') || '';
+          const title = item.title || '';
+          return {
+            title,
+            link: item.link,
+            description: desc,
+            pubDate: item.pubDate,
+            source: feedInfo.source,
+            sentiment: analyzeSentimentFast(title + " " + desc),
+            category: 'Global Markets'
+          };
+        });
+      } catch (e) {
+        console.error(`Failed to fetch from ${feedInfo.source}:`, e);
+        return [];
+      }
+    });
+
+    const results = await Promise.all(allNewsPromises);
+    let allNews = results.flat();
+
+    allNews.sort((a, b) => {
+      const dateA = a.pubDate ? new Date(a.pubDate).getTime() : 0;
+      const dateB = b.pubDate ? new Date(b.pubDate).getTime() : 0;
+      return dateB - dateA;
+    });
+
+    res.json({ data: allNews.slice(0, 20) });
+  } catch (error) {
+    console.error("Failed to fetch global news:", error);
+    res.status(500).json({ message: "Failed to fetch global news" });
   }
 };
 

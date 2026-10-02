@@ -101,6 +101,9 @@ export const api = createApi({
     getIndianNews: builder.query<{ data: Array<{ title: string, link: string, description: string, pubDate: string, source: string, sentiment: string }> }, void>({
       query: () => 'market/news',
     }),
+    getGlobalNews: builder.query<{ data: Array<{ title: string, link: string, description: string, pubDate: string, source: string, sentiment: string, category: string }> }, void>({
+      query: () => 'market/global-news',
+    }),
     analyzeNews: builder.mutation<{ data: { analysis: string } }, { title: string, description: string }>({
       query: (body) => ({
         url: 'market/analyze-news',
@@ -121,6 +124,18 @@ export const api = createApi({
     searchSymbols: builder.query<{ data: Array<{ symbol: string, name: string, assetClass: string }> }, string>({
       query: (q) => `market/search?q=${encodeURIComponent(q)}`,
     }),
+    getForexRates: builder.query<{ data: Array<{ pair: string, rate: number, change: number, changePercent: number, source: string }> }, string | undefined>({
+      query: (pairs) => pairs ? `forex/rates?pairs=${pairs}` : 'forex/rates',
+    }),
+    getCommonForexPairs: builder.query<{ data: any[], commonPairs: string[] }, void>({
+      query: () => 'forex/common',
+    }),
+    getEconomicCalendar: builder.query<{ data: any[] }, number | undefined>({
+      query: (days) => days ? `forex/calendar?days=${days}` : 'forex/calendar',
+    }),
+    getForexNews: builder.query<{ data: any[] }, void>({
+      query: () => 'forex/news',
+    }),
   }),
 });
 
@@ -140,9 +155,14 @@ export const {
   useRemoveFromWatchlistMutation,
   useGetLivePricesQuery,
   useGetIndianNewsQuery,
+  useGetGlobalNewsQuery,
   useAnalyzeNewsMutation,
   useGetAnnualReportQuery,
   useLazyGetAnnualReportQuery,
   useAnalyzeCompanyMutation,
   useSearchSymbolsQuery,
+  useGetForexRatesQuery,
+  useGetCommonForexPairsQuery,
+  useGetEconomicCalendarQuery,
+  useGetForexNewsQuery,
 } = api;

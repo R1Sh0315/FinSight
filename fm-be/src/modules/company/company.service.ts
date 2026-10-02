@@ -27,15 +27,21 @@ export const getTopCompanies = async (limit: number = 10) => {
 };
 
 export const getCompanyFinancials = async (symbol: string) => {
-  // Mock data for now until financial module is fully implemented
+  // TODO: Implement real financial data integration
+  // Options:
+  // 1. Yahoo Finance API (already used for prices) - has some financial metrics
+  // 2. Finnhub API - comprehensive financial data for Indian stocks
+  // 3. Screener.in scraping - extract from company pages
+  // 4. PDF parsing of annual reports - extract from company annual reports
+  // For now, return only the company's basic info without mock financial data
+  const company = await getCompanyBySymbol(symbol);
+  if (!company) return null;
+
   return {
     symbol: symbol.toUpperCase(),
-    year: new Date().getFullYear(),
-    revenue: 1000000000,
-    netIncome: 150000000,
-    eps: 4.5,
-    peRatio: 22.5,
-    operatingMargin: 0.18,
-    debtToEquity: 0.5
+    name: company.name,
+    exchange: company.exchange,
+    // Real financial metrics should be fetched from external API
+    message: "Financial data integration in progress"
   };
 };
