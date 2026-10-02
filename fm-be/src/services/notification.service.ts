@@ -17,18 +17,18 @@ export const sendAlertEmail = async (toEmail: string, userName: string, alerts: 
   });
 
   const mailOptions = {
-    from: `"FinAI Portfolio Alerts" <${process.env.EMAIL_USER}>`,
+    from: `"FinSight Portfolio Alerts" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: `🚨 Portfolio Alert: ${alerts.length} Thresholds Crossed`,
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
         <h2>Hello ${userName},</h2>
-        <p>Your FinAI portfolio has generated some alerts based on your P&L thresholds:</p>
+        <p>Your FinSight portfolio has generated some alerts based on your P&L thresholds:</p>
         <ul style="font-size: 16px;">
           ${alerts.map(alert => `<li style="margin-bottom: 10px;">${alert}</li>`).join('')}
         </ul>
         <p style="margin-top: 20px;">
-          Log in to your <a href="https://fin-sight-gules.vercel.app/">FinAI Dashboard</a> to view your full portfolio.
+          Log in to your <a href="https://fin-sight-gules.vercel.app/">FinSight Dashboard</a> to view your full portfolio.
         </p>
       </div>
     `,
