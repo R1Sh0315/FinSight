@@ -10,6 +10,10 @@
     {
       "path": "/api/cron/sip",
       "schedule": "30 23 * * *"
+    },
+    {
+      "path": "/api/cron/alerts",
+      "schedule": "45 3-10 * * 1-5"
     }
   ]
 }

@@ -36,13 +36,21 @@ import { runSipEngine } from "./services/sip/sip.engine.js";
 
 app.get("/api/cron/sip", async (req, res) => {
   try {
-    // Vercel Cron requests can be authenticated by checking an env var
-    // if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).end();
-    
     await runSipEngine();
     res.json({ success: true, message: "SIP Engine executed successfully" });
   } catch (error) {
     res.status(500).json({ success: false, error: "SIP Engine failed" });
+  }
+});
+
+import { runAlertEngine } from "./services/alert.engine.js";
+
+app.get("/api/cron/alerts", async (req, res) => {
+  try {
+    await runAlertEngine();
+    res.json({ success: true, message: "Alert Engine executed successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Alert Engine failed" });
   }
 });
 

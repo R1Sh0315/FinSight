@@ -16,6 +16,7 @@ export interface IInvestment extends Document {
   sipStatus?: 'Active' | 'Completed' | 'Paused';
   sipInstallmentsPaid?: number;
   manualCurrentPrice?: number;
+  alertsSent?: number[];
 }
 
 const investmentSchema = new Schema<IInvestment>(
@@ -34,7 +35,8 @@ const investmentSchema = new Schema<IInvestment>(
     sipStartDate: { type: Date },
     sipStatus: { type: String, enum: ['Active', 'Completed', 'Paused'], default: 'Active' },
     sipInstallmentsPaid: { type: Number, min: 0, default: 0 },
-    manualCurrentPrice: { type: Number, min: 0 }
+    manualCurrentPrice: { type: Number, min: 0 },
+    alertsSent: { type: [Number], default: [] }
   },
   { timestamps: true }
 );
