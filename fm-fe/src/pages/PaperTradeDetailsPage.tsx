@@ -63,7 +63,9 @@ export default function PaperTradeDetailsPage() {
   const handleMockPrice = async () => {
     if (!mockPrice) return;
     try {
-      await fetch(`https://fin-sight-gules.vercel.app/api/v1/papertrades/${trade._id}/price`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1/';
+      const url = apiUrl.endsWith('/') ? `${apiUrl}papertrades/${trade._id}/price` : `${apiUrl}/papertrades/${trade._id}/price`;
+      await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,8 +130,8 @@ export default function PaperTradeDetailsPage() {
         </div>
         <div className="p-4 bg-dash-elevated rounded-xl border border-dash-border shadow-sm">
           <p className="text-[13px] text-dash-text-secondary mb-1">{isExited ? 'Realized P&L' : 'Unrealized P&L'}</p>
-          <p className={`text-[20px] font-bold ${pnl > 0 ? 'text-green-500' : pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
-            {pnl > 0 ? '+' : ''}₹{pnl.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          <p className={`text-[20px] font-bold whitespace-nowrap ${pnl > 0 ? 'text-green-500' : pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
+            {pnl > 0 ? '+' : pnl < 0 ? '-' : ''}₹{Math.abs(pnl).toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </p>
           <p className={`text-[12px] font-medium mt-1 ${pnlPercent > 0 ? 'text-green-500/80' : pnlPercent < 0 ? 'text-red-500/80' : 'text-dash-text-muted'}`}>
             {pnlPercent > 0 ? '+' : ''}{pnlPercent.toFixed(2)}% Return

@@ -75,10 +75,10 @@ export default function PaperTradingDashboard() {
         <td className="py-4 px-4 text-right text-dash-text-primary font-medium">₹{trade.entryPrice.toFixed(2)}</td>
         <td className="py-4 px-4 text-right text-dash-text-primary font-medium">₹{currentPrice.toFixed(2)}</td>
         <td className="py-4 px-4 text-right tabular-nums">
-          <div className={`font-medium ${pnl > 0 ? 'text-green-500' : pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
-            {pnl > 0 ? '+' : ''}₹{pnl.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          <div className={`font-medium whitespace-nowrap ${pnl > 0 ? 'text-green-500' : pnl < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
+            {pnl > 0 ? '+' : pnl < 0 ? '-' : ''}₹{Math.abs(pnl).toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </div>
-          <div className={`text-[12px] ${pnlPercent > 0 ? 'text-green-500/80' : pnlPercent < 0 ? 'text-red-500/80' : 'text-dash-text-muted'}`}>
+          <div className={`text-[12px] whitespace-nowrap ${pnlPercent > 0 ? 'text-green-500/80' : pnlPercent < 0 ? 'text-red-500/80' : 'text-dash-text-muted'}`}>
             {pnlPercent > 0 ? '+' : ''}{pnlPercent.toFixed(2)}%
           </div>
         </td>
