@@ -12,7 +12,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './store/store';
 import type { RootState } from './store/store';
 import { logout } from './store/authSlice';
-import { LogOut, User as UserIcon, Moon, Sun, LayoutDashboard, LineChart, Globe, Newspaper, BookOpen, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LogOut, User as UserIcon, Moon, Sun, LayoutDashboard, LineChart, Globe, Newspaper, BookOpen, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { TickerTape } from "react-ts-tradingview-widgets";
 
