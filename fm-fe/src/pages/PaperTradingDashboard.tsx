@@ -99,6 +99,21 @@ export default function PaperTradingDashboard() {
     );
   };
 
+  let totalInvestment = 0;
+  let totalCurrentValue = 0;
+  
+  activeTrades.forEach(trade => {
+    const inv = trade.entryPrice * trade.totalQuantity;
+    const currentPrice = trade.priceHistory.length > 0 ? trade.priceHistory[trade.priceHistory.length - 1].price : trade.entryPrice;
+    const currVal = currentPrice * trade.totalQuantity;
+    
+    totalInvestment += inv;
+    totalCurrentValue += currVal;
+  });
+  
+  const totalPnL = totalCurrentValue - totalInvestment;
+  const totalPnLPercent = totalInvestment > 0 ? (totalPnL / totalInvestment) * 100 : 0;
+
   return (
     <div className="max-w-7xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
@@ -112,6 +127,28 @@ export default function PaperTradingDashboard() {
         >
           <Plus className="w-4 h-4" /> Add Paper Trade
         </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-dash-card rounded-xl border border-dash-border p-5 shadow-sm">
+          <p className="text-[14px] text-dash-text-secondary mb-1">Total Investment (Active)</p>
+          <p className="text-[24px] font-bold text-dash-text-primary">₹{totalInvestment.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+        </div>
+        <div className="bg-dash-card rounded-xl border border-dash-border p-5 shadow-sm">
+          <p className="text-[14px] text-dash-text-secondary mb-1">Current Value</p>
+          <p className="text-[24px] font-bold text-dash-text-primary">₹{totalCurrentValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+        </div>
+        <div className="bg-dash-card rounded-xl border border-dash-border p-5 shadow-sm">
+          <p className="text-[14px] text-dash-text-secondary mb-1">Total Unrealized P&L</p>
+          <div className="flex items-baseline gap-2">
+            <p className={`text-[24px] font-bold whitespace-nowrap ${totalPnL > 0 ? 'text-green-500' : totalPnL < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
+              {totalPnL > 0 ? '+' : totalPnL < 0 ? '-' : ''}₹{Math.abs(totalPnL).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </p>
+            <p className={`text-[14px] font-medium whitespace-nowrap ${totalPnLPercent > 0 ? 'text-green-500/80' : totalPnLPercent < 0 ? 'text-red-500/80' : 'text-dash-text-muted'}`}>
+              ({totalPnLPercent > 0 ? '+' : ''}{totalPnLPercent.toFixed(2)}%)
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-8 flex gap-3">
