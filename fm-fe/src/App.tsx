@@ -12,7 +12,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './store/store';
 import type { RootState } from './store/store';
 import { logout } from './store/authSlice';
-import { LogOut, User as UserIcon, Moon, Sun, LayoutDashboard, LineChart, Globe, Newspaper, BookOpen, Menu } from 'lucide-react';
+import { LogOut, User as UserIcon, Moon, Sun, LayoutDashboard, LineChart, Globe, Newspaper, BookOpen, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import React from 'react';
 import { TickerTape } from "react-ts-tradingview-widgets";
 
@@ -104,7 +104,15 @@ function Layout({ children }: { children: React.ReactNode }) {
       
       {/* Sidebar */}
       {user && (
-        <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-dash-header border-r border-dash-border flex flex-col transition-all duration-300 z-10 shrink-0`}>
+        <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} relative bg-dash-header border-r border-dash-border flex flex-col transition-all duration-300 z-20 shrink-0`}>
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="absolute -right-3 top-6 bg-dash-elevated border border-dash-border rounded-full p-1 text-dash-text-secondary hover:text-dash-text-primary z-30 shadow-md hidden sm:flex"
+            title="Toggle Sidebar"
+          >
+            {isSidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          </button>
+          
           <div className="h-16 flex items-center justify-between px-4 border-b border-dash-border shrink-0">
             {isSidebarOpen ? (
               <Link to="/" className="flex items-center gap-2 text-xl font-bold text-dash-text-primary hover:text-blue-400 transition-colors whitespace-nowrap overflow-hidden">
@@ -114,7 +122,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 FinSight
               </Link>
             ) : (
-              <Link to="/" className="flex items-center justify-center w-full">
+              <Link to="/" className="flex items-center justify-center w-full mt-2">
                 <div className="bg-blue-600 p-1.5 rounded-lg shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 </div>
@@ -180,57 +188,59 @@ function Layout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Topbar */}
-        <header className="bg-dash-header border-b border-dash-border h-16 shrink-0 flex items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            {user && (
-              <button 
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors"
-                title="Toggle Sidebar"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-            )}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-dash-bg relative sm:p-4">
+        <div className="flex-1 flex flex-col min-w-0 bg-dash-bg sm:border sm:border-dash-border sm:rounded-2xl overflow-hidden relative shadow-sm">
+          {/* Topbar */}
+          <header className="bg-dash-header border-b border-dash-border h-16 shrink-0 flex items-center justify-between px-6 z-10">
+            <div className="flex items-center gap-4">
+              {user && (
+                <button 
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors sm:hidden"
+                  title="Toggle Sidebar"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              )}
+              
+              {!user && (
+                <Link to="/" className="flex items-center gap-2 text-xl font-bold text-dash-text-primary hover:text-blue-400 transition-colors">
+                  <div className="bg-blue-600 p-1.5 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                  </div>
+                  FinSight
+                </Link>
+              )}
+            </div>
             
-            {!user && (
-              <Link to="/" className="flex items-center gap-2 text-xl font-bold text-dash-text-primary hover:text-blue-400 transition-colors">
-                <div className="bg-blue-600 p-1.5 rounded-lg">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                </div>
-                FinSight
-              </Link>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-5">
-            <MarketStatus />
-            <button 
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-full text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-all"
-              aria-label="Toggle theme"
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-          </div>
-        </header>
+            <div className="flex items-center gap-5">
+              <MarketStatus />
+              <button 
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 rounded-full text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-all"
+                aria-label="Toggle theme"
+              >
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+            </div>
+          </header>
 
-        <TickerTape 
-          colorTheme={darkMode ? "dark" : "light"} 
-          displayMode="adaptive"
-          symbols={[
-            { proName: "BSE:RELIANCE", title: "Reliance" },
-            { proName: "BSE:TCS", title: "TCS" },
-            { proName: "BSE:HDFCBANK", title: "HDFC" },
-            { proName: "BSE:INFY", title: "Infosys" },
-            { proName: "BSE:ICICIBANK", title: "ICICI" }
-          ]} 
-        />
+          <TickerTape 
+            colorTheme={darkMode ? "dark" : "light"} 
+            displayMode="adaptive"
+            symbols={[
+              { proName: "BSE:RELIANCE", title: "Reliance" },
+              { proName: "BSE:TCS", title: "TCS" },
+              { proName: "BSE:HDFCBANK", title: "HDFC" },
+              { proName: "BSE:INFY", title: "Infosys" },
+              { proName: "BSE:ICICIBANK", title: "ICICI" }
+            ]} 
+          />
 
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
