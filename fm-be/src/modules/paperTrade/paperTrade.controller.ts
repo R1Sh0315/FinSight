@@ -9,7 +9,7 @@ import {
 
 export const getPaperTrades = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).userId;
     const trades = await PaperTrade.find({ userId }).sort({ createdAt: -1 });
     res.json({ data: trades });
   } catch (error) {
@@ -20,7 +20,7 @@ export const getPaperTrades = async (req: Request, res: Response) => {
 
 export const getPaperTradeById = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).userId;
     const { id } = req.params;
     const trade = await PaperTrade.findOne({ _id: id, userId });
     
@@ -37,7 +37,7 @@ export const getPaperTradeById = async (req: Request, res: Response) => {
 
 export const createPaperTrade = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).userId;
     const { 
       underlying, optionType, strikePrice, expiryDate, 
       entryPrice, lotSize, numberOfLots, notes 
@@ -68,7 +68,7 @@ export const createPaperTrade = async (req: Request, res: Response) => {
 
 export const exitPaperTrade = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).userId;
     const { id } = req.params;
     const { exitPrice, exitReason, exitDateTime } = req.body;
     
@@ -102,7 +102,7 @@ export const exitPaperTrade = async (req: Request, res: Response) => {
 export const recordDailyPrice = async (req: Request, res: Response) => {
   // Utility endpoint to manually append a price to history for demo/MVP purposes
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).userId;
     const { id } = req.params;
     const { price, timestamp } = req.body;
     
