@@ -121,12 +121,33 @@ export default function PaperTradingDashboard() {
           <h1 className="text-[28px] font-bold text-dash-text-primary mb-2">Options Paper Trading</h1>
           <p className="text-dash-text-secondary">Hypothetical trading and historical analysis for NSE Options.</p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <Plus className="w-4 h-4" /> Add Paper Trade
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={async () => {
+              try {
+                // We'll use a direct fetch here to avoid rewriting the RTK query api right now
+                await fetch(`${import.meta.env.VITE_API_URL || 'https://fin-sight-gules.vercel.app/api/v1/'}papertrades/sync`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  }
+                });
+                alert('Triggered live fetch from NSE. Please refresh the page in a few seconds.');
+              } catch(e) {
+                console.error(e);
+              }
+            }}
+            className="bg-dash-elevated hover:bg-dash-border text-dash-text-primary font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors border border-dash-border shadow-sm"
+          >
+            <Clock className="w-4 h-4" /> Sync Live Prices
+          </button>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Add Paper Trade
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

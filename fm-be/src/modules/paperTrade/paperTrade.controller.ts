@@ -125,3 +125,15 @@ export const recordDailyPrice = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to record price" });
   }
 };
+
+import { updatePaperTradePrices } from "./paperTrade.cron.js";
+
+export const syncPrices = async (req: Request, res: Response) => {
+  try {
+    // Manually trigger the cron job logic for testing purposes
+    await updatePaperTradePrices();
+    res.status(200).json({ success: true, message: "Sync triggered successfully" });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

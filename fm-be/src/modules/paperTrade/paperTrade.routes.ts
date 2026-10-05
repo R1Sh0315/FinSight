@@ -4,7 +4,8 @@ import {
   getPaperTradeById, 
   createPaperTrade, 
   exitPaperTrade,
-  recordDailyPrice
+  recordDailyPrice,
+  syncPrices
 } from "./paperTrade.controller.js";
 import { protect } from "../../utils/auth.middleware.js";
 
@@ -14,6 +15,7 @@ router.use(protect as any);
 
 router.get("/", getPaperTrades);
 router.post("/", createPaperTrade);
+router.post("/sync", syncPrices);
 router.get("/:id", getPaperTradeById);
 router.patch("/:id/exit", exitPaperTrade);
 router.post("/:id/price", recordDailyPrice);
