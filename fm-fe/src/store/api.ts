@@ -25,7 +25,7 @@ export const api = createApi({
       return headers;
     }
   }),
-  tagTypes: ['Investments', 'Watchlist'],
+  tagTypes: ['Investments', 'Watchlist', 'PaperTrades'],
   endpoints: (builder) => ({
     getAllCompanies: builder.query<{ data: Company[] }, void>({
       query: () => 'companies',
@@ -136,6 +136,30 @@ export const api = createApi({
     getForexNews: builder.query<{ data: any[] }, void>({
       query: () => 'forex/news',
     }),
+    getPaperTrades: builder.query<{ data: any[] }, void>({
+      query: () => 'papertrades',
+      providesTags: ['PaperTrades'] as any,
+    }),
+    getPaperTradeById: builder.query<{ data: any }, string>({
+      query: (id) => `papertrades/${id}`,
+      providesTags: (_result, _error, id) => [{ type: 'PaperTrades', id }] as any,
+    }),
+    createPaperTrade: builder.mutation<{ data: any }, any>({
+      query: (body) => ({
+        url: 'papertrades',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['PaperTrades'] as any,
+    }),
+    exitPaperTrade: builder.mutation<{ data: any }, { id: string, exitPrice: number, exitReason?: string, exitDateTime?: string }>({
+      query: ({ id, ...body }) => ({
+        url: `papertrades/${id}/exit`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['PaperTrades'] as any,
+    }),
   }),
 });
 
@@ -165,4 +189,8 @@ export const {
   useGetCommonForexPairsQuery,
   useGetEconomicCalendarQuery,
   useGetForexNewsQuery,
+  useGetPaperTradesQuery,
+  useGetPaperTradeByIdQuery,
+  useCreatePaperTradeMutation,
+  useExitPaperTradeMutation,
 } = api;

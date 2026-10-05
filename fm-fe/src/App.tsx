@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import JournalPage from './pages/JournalPage';
 import NewsPage from './pages/NewsPage';
 import ForexDashboardPage from './pages/ForexDashboardPage';
+import PaperTradingDashboard from './pages/PaperTradingDashboard';
+import PaperTradeDetailsPage from './pages/PaperTradeDetailsPage';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './store/store';
 import type { RootState } from './store/store';
@@ -103,6 +105,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             {user && (
               <div className="hidden sm:flex items-center gap-1 ml-4 border-l border-dash-border pl-6">
                 <Link to="/" className="px-3 py-1.5 text-[14px] font-medium text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated rounded-md transition-colors">Dashboard</Link>
+                <Link to="/paper-trading" className="px-3 py-1.5 text-[14px] font-medium text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated rounded-md transition-colors">Paper Trading</Link>
                 <Link to="/forex" className="px-3 py-1.5 text-[14px] font-medium text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated rounded-md transition-colors">Forex</Link>
                 <Link to="/news" className="px-3 py-1.5 text-[14px] font-medium text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated rounded-md transition-colors">News & Calendar</Link>
                 <Link to="/journal" className="px-3 py-1.5 text-[14px] font-medium text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated rounded-md transition-colors">Trade Journal</Link>
@@ -179,6 +182,8 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+              <Route path="/paper-trading" element={<PrivateRoute><PaperTradingDashboard /></PrivateRoute>} />
+              <Route path="/paper-trading/:id" element={<PrivateRoute><PaperTradeDetailsPage /></PrivateRoute>} />
               <Route path="/forex" element={<PrivateRoute><ForexDashboardPage /></PrivateRoute>} />
               <Route path="/journal" element={<PrivateRoute><JournalPage /></PrivateRoute>} />
               <Route path="/news" element={<PrivateRoute><NewsPage /></PrivateRoute>} />

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useGetCommonForexPairsQuery, useGetForexRatesQuery } from '../store/api';
-import { TrendingUp, TrendingDown, Search, Loader2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
 import TradingViewWidget from '../components/TradingViewWidget';
 
 export default function ForexDashboardPage() {
