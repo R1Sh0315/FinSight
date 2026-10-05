@@ -85,7 +85,7 @@ export const updatePaperTradePrices = async () => {
           trade.underlying, 
           trade.strikePrice, 
           trade.optionType, 
-          trade.expiryDate
+          trade.expiryDate.toLocaleString('default', { month: 'long' })
         );
         
         if (currentPrice !== null && currentPrice > 0) {
