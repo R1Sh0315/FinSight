@@ -188,59 +188,57 @@ function Layout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-dash-bg relative sm:p-4">
-        <div className="flex-1 flex flex-col min-w-0 bg-dash-bg sm:border sm:border-dash-border sm:rounded-2xl overflow-hidden relative shadow-sm">
-          {/* Topbar */}
-          <header className="bg-dash-header border-b border-dash-border h-16 shrink-0 flex items-center justify-between px-6 z-10">
-            <div className="flex items-center gap-4">
-              {user && (
-                <button 
-                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors sm:hidden"
-                  title="Toggle Sidebar"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-              )}
-              
-              {!user && (
-                <Link to="/" className="flex items-center gap-2 text-xl font-bold text-dash-text-primary hover:text-blue-400 transition-colors">
-                  <div className="bg-blue-600 p-1.5 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                  </div>
-                  FinSight
-                </Link>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-5">
-              <MarketStatus />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-dash-bg relative">
+        {/* Topbar */}
+        <header className="bg-dash-header border-b border-dash-border h-16 shrink-0 flex items-center justify-between px-6 z-10">
+          <div className="flex items-center gap-4">
+            {user && (
               <button 
-                onClick={() => setDarkMode(!darkMode)}
-                className="p-2 rounded-full text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-all"
-                aria-label="Toggle theme"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors sm:hidden"
+                title="Toggle Sidebar"
               >
-                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <Menu className="w-5 h-5" />
               </button>
-            </div>
-          </header>
+            )}
+            
+            {!user && (
+              <Link to="/" className="flex items-center gap-2 text-xl font-bold text-dash-text-primary hover:text-blue-400 transition-colors">
+                <div className="bg-blue-600 p-1.5 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                </div>
+                FinSight
+              </Link>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-5">
+            <MarketStatus />
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2 rounded-full text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-all"
+              aria-label="Toggle theme"
+            >
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          </div>
+        </header>
 
-          <TickerTape 
-            colorTheme={darkMode ? "dark" : "light"} 
-            displayMode="adaptive"
-            symbols={[
-              { proName: "BSE:RELIANCE", title: "Reliance" },
-              { proName: "BSE:TCS", title: "TCS" },
-              { proName: "BSE:HDFCBANK", title: "HDFC" },
-              { proName: "BSE:INFY", title: "Infosys" },
-              { proName: "BSE:ICICIBANK", title: "ICICI" }
-            ]} 
-          />
+        <TickerTape 
+          colorTheme={darkMode ? "dark" : "light"} 
+          displayMode="adaptive"
+          symbols={[
+            { proName: "BSE:RELIANCE", title: "Reliance" },
+            { proName: "BSE:TCS", title: "TCS" },
+            { proName: "BSE:HDFCBANK", title: "HDFC" },
+            { proName: "BSE:INFY", title: "Infosys" },
+            { proName: "BSE:ICICIBANK", title: "ICICI" }
+          ]} 
+        />
 
-          <main className="flex-1 overflow-y-auto">
-            {children}
-          </main>
-        </div>
+        <main className="flex-1 overflow-y-auto px-6 py-8">
+          {children}
+        </main>
       </div>
     </div>
   );
