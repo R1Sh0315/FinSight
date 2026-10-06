@@ -825,46 +825,46 @@ export default function HomePage() {
           {metals ? (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-500/30">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 shrink-0 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-500/30">
                     <span className="text-[16px] font-bold text-yellow-500">Au</span>
                   </div>
-                  <div>
-                    <h4 className="text-[14px] font-bold text-dash-text-primary">Gold</h4>
-                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  <div className="min-w-0">
+                    <h4 className="text-[14px] font-bold text-dash-text-primary truncate">Gold</h4>
+                    <p className="text-[12px] text-dash-text-muted truncate">Per Gram (INR)</p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0 ml-2">
                   <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.gold.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
               <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-400/20 flex items-center justify-center border border-gray-400/30">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 shrink-0 rounded-full bg-gray-400/20 flex items-center justify-center border border-gray-400/30">
                     <span className="text-[16px] font-bold text-gray-300">Ag</span>
                   </div>
-                  <div>
-                    <h4 className="text-[14px] font-bold text-dash-text-primary">Silver</h4>
-                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  <div className="min-w-0">
+                    <h4 className="text-[14px] font-bold text-dash-text-primary truncate">Silver</h4>
+                    <p className="text-[12px] text-dash-text-muted truncate">Per Gram (INR)</p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0 ml-2">
                   <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.silver.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
               <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-300/20 flex items-center justify-center border border-slate-300/30">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 shrink-0 rounded-full bg-slate-300/20 flex items-center justify-center border border-slate-300/30">
                     <span className="text-[16px] font-bold text-slate-200">Pt</span>
                   </div>
-                  <div>
-                    <h4 className="text-[14px] font-bold text-dash-text-primary">Platinum</h4>
-                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  <div className="min-w-0">
+                    <h4 className="text-[14px] font-bold text-dash-text-primary truncate">Platinum</h4>
+                    <p className="text-[12px] text-dash-text-muted truncate">Per Gram (INR)</p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0 ml-2">
                   <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.platinum.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
