@@ -1099,3 +1099,39 @@ export const searchSymbols = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Search failed" });
   }
 };
+
+
+export const getMetals = async (req: Request, res: Response) => {
+  try {
+    const results = await yahooFinance.quote(['XAUUSD=X', 'XAGUSD=X', 'XPTUSD=X', 'INR=X']);
+    let inrRate = 84.0;
+    let goldOz = 2600;
+    let silverOz = 30;
+    let platOz = 1000;
+    
+    for (const r of results) {
+      if (r.symbol === 'INR=X') inrRate = r.regularMarketPrice || inrRate;
+      if (r.symbol === 'XAUUSD=X') goldOz = r.regularMarketPrice || goldOz;
+      if (r.symbol === 'XAGUSD=X') silverOz = r.regularMarketPrice || silverOz;
+      if (r.symbol === 'XPTUSD=X') platOz = r.regularMarketPrice || platOz;
+    }
+
+    // 1 Troy Ounce = 31.1034768 grams
+    const OUNCE_IN_GRAMS = 31.1034768;
+    
+    const goldPerGramInr = (goldOz * inrRate) / OUNCE_IN_GRAMS;
+    const silverPerGramInr = (silverOz * inrRate) / OUNCE_IN_GRAMS;
+    const platPerGramInr = (platOz * inrRate) / OUNCE_IN_GRAMS;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        gold: goldPerGramInr,
+        silver: silverPerGramInr,
+        platinum: platPerGramInr
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -124,6 +124,10 @@ export const api = createApi({
     searchSymbols: builder.query<{ data: Array<{ symbol: string, name: string, assetClass: string }> }, string>({
       query: (q) => `market/search?q=${encodeURIComponent(q)}`,
     }),
+    getMetals: builder.query<{ gold: number; silver: number; platinum: number }, void>({
+      query: () => 'market/metals',
+      transformResponse: (response: any) => response.data,
+    }),
     getForexRates: builder.query<{ data: Array<{ pair: string, rate: number, change: number, changePercent: number, source: string }> }, string | undefined>({
       query: (pairs) => pairs ? `forex/rates?pairs=${pairs}` : 'forex/rates',
     }),
@@ -185,6 +189,7 @@ export const {
   useLazyGetAnnualReportQuery,
   useAnalyzeCompanyMutation,
   useSearchSymbolsQuery,
+  useGetMetalsQuery,
   useGetForexRatesQuery,
   useGetCommonForexPairsQuery,
   useGetEconomicCalendarQuery,

@@ -13,17 +13,18 @@ import {
   useGetLivePricesQuery,
   useAnalyzeCompanyMutation,
   useSearchSymbolsQuery,
+  useGetMetalsQuery,
   useLazyGetAnnualReportQuery
 } from '../store/api';
 import { TrendingUp, Briefcase, Wallet, PieChart, Activity, Search, Plus, X, BarChart2, Info, Edit2, ExternalLink, Sparkles, Loader2, MoreVertical, Download, MinusCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import { MiniChart } from 'react-ts-tradingview-widgets';
 import AdvancedChartWidget from '../components/AdvancedChartWidget';
 
 export default function HomePage() {
-  const { data: investmentsData, isLoading: loadingInvestments } = useGetInvestmentsQuery();
+    const { data: investmentsData, isLoading: loadingInvestments } = useGetInvestmentsQuery();
+  const { data: metals } = useGetMetalsQuery(undefined, { pollingInterval: 60000 });
   const [addInvestment, { isLoading: addingInvestment }] = useAddInvestmentMutation();
   const [triggerGetAnnualReport] = useLazyGetAnnualReportQuery();
   const [reportDropdownOpenId, setReportDropdownOpenId] = useState<string | null>(null);
@@ -805,17 +806,59 @@ export default function HomePage() {
             <Sparkles className="w-5 h-5 text-yellow-500" />
             <h3 className="text-[16px] font-bold text-dash-text-primary">Precious Metals (Live)</h3>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
-              <MiniChart colorTheme="dark" symbol="MCX:GOLD1!" width="100%" height="100%" dateRange="1M" isTransparent={true} />
+          
+          {metals ? (
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-500/30">
+                    <span className="text-[16px] font-bold text-yellow-500">Au</span>
+                  </div>
+                  <div>
+                    <h4 className="text-[14px] font-bold text-dash-text-primary">Gold</h4>
+                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.gold.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+
+              <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-400/20 flex items-center justify-center border border-gray-400/30">
+                    <span className="text-[16px] font-bold text-gray-300">Ag</span>
+                  </div>
+                  <div>
+                    <h4 className="text-[14px] font-bold text-dash-text-primary">Silver</h4>
+                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.silver.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+
+              <div className="bg-dash-bg rounded-lg border border-dash-border p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-300/20 flex items-center justify-center border border-slate-300/30">
+                    <span className="text-[16px] font-bold text-slate-200">Pt</span>
+                  </div>
+                  <div>
+                    <h4 className="text-[14px] font-bold text-dash-text-primary">Platinum</h4>
+                    <p className="text-[12px] text-dash-text-muted">Per Gram (INR)</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.platinum.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
             </div>
-            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
-              <MiniChart colorTheme="dark" symbol="MCX:SILVER1!" width="100%" height="100%" dateRange="1M" isTransparent={true} />
+          ) : (
+            <div className="flex justify-center items-center h-[200px]">
+              <Loader2 className="w-6 h-6 text-dash-text-muted animate-spin" />
             </div>
-            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
-              <MiniChart colorTheme="dark" symbol="TVC:PLATINUM" width="100%" height="100%" dateRange="1M" isTransparent={true} />
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="bg-dash-card rounded-xl border border-dash-border shadow-sm overflow-hidden flex-1 flex flex-col">
