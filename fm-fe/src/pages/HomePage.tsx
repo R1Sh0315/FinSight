@@ -329,7 +329,7 @@ export default function HomePage() {
             {loadingPrices || loadingInvestments ? (
               <div className="h-8 w-32 bg-dash-border/30 rounded animate-pulse"></div>
             ) : (
-              <p className="text-[28px] font-bold tracking-tight text-dash-text-primary">
+              <p className="text-[22px] xl:text-[26px] font-bold tracking-tight text-dash-text-primary truncate">
                 ₹{totalInvestedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             )}
@@ -347,7 +347,7 @@ export default function HomePage() {
             {loadingPrices || loadingInvestments ? (
               <div className="h-8 w-32 bg-dash-border/30 rounded animate-pulse"></div>
             ) : (
-              <p className="text-[28px] font-bold tracking-tight text-dash-text-primary">
+              <p className="text-[22px] xl:text-[26px] font-bold tracking-tight text-dash-text-primary truncate">
                 ₹{totalCurrentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             )}
@@ -366,7 +366,7 @@ export default function HomePage() {
               <div className="h-8 w-40 bg-dash-border/30 rounded animate-pulse"></div>
             ) : (
               <div className="flex items-baseline gap-2">
-                <p className={`text-[28px] font-bold tracking-tight ${totalPnL > 0 ? 'text-green-500' : totalPnL < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
+                <p className={`text-[22px] xl:text-[26px] font-bold tracking-tight truncate ${totalPnL > 0 ? 'text-green-500' : totalPnL < 0 ? 'text-red-500' : 'text-dash-text-primary'}`}>
                   {totalPnL > 0 ? '+' : ''}₹{totalPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 <p className={`text-[14px] font-medium ${totalPnL > 0 ? 'text-green-500/80' : totalPnL < 0 ? 'text-red-500/80' : 'text-dash-text-muted'}`}>
@@ -573,7 +573,8 @@ export default function HomePage() {
                 <p className="text-dash-text-secondary text-[14px] mb-6 max-w-sm">Start building your portfolio by adding your first investment below.</p>
               </div>
             ) : (
-              <table className="w-full text-left border-collapse">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                   <tr className="border-b border-dash-border text-dash-text-muted text-[12px] font-medium tracking-wide">
                     <th className="py-4 pl-6 pr-2 font-normal text-center w-12 text-dash-text-muted">#</th>
@@ -803,6 +804,7 @@ export default function HomePage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
           </div>
@@ -833,7 +835,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.gold.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                  <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.gold.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
@@ -848,7 +850,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.silver.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                  <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.silver.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
@@ -863,7 +865,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.platinum.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+                  <span className="text-[15px] xl:text-[18px] font-bold text-dash-text-primary tracking-wide">₹{metals.platinum.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
             </div>
