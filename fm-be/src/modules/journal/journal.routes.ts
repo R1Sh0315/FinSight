@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getJournalEntries, addJournalEntry, deleteJournalEntry } from './journal.controller.js';
+import { getJournalEntries, addJournalEntry, deleteJournalEntry, updateJournalEntry } from './journal.controller.js';
 import { protect } from '../../utils/auth.middleware.js';
 
 const router = Router();
@@ -9,5 +9,6 @@ router.use(protect);
 router.get('/', getJournalEntries);
 router.post('/', addJournalEntry);
 router.delete('/:id', deleteJournalEntry);
+router.put('/:id', updateJournalEntry);
 
 export default router;

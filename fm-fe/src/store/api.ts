@@ -142,6 +142,15 @@ export const api = createApi({
       }),
       invalidatesTags: ['Journal'] as any
     }),
+
+    updateJournalEntry: builder.mutation<any, { id: string; body: any }>({
+      query: ({ id, body }) => ({
+        url: `journal/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Journal'] as any
+    }),
     deleteJournalEntry: builder.mutation<any, string>({
       query: (id) => ({
         url: `journal/${id}`,
@@ -213,6 +222,7 @@ export const {
   useGetMetalsQuery,
   useGetJournalEntriesQuery,
   useAddJournalEntryMutation,
+  useUpdateJournalEntryMutation,
   useDeleteJournalEntryMutation,
   useGetForexRatesQuery,
   useGetCommonForexPairsQuery,

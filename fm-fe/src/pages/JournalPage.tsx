@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Plus, Tag, TrendingUp, TrendingDown, Clock, Search, Trash2 } from 'lucide-react';
-import { useGetJournalEntriesQuery, useAddJournalEntryMutation, useDeleteJournalEntryMutation, useGetForexRatesQuery } from '../store/api';
+import { BookOpen, Plus, Tag, TrendingUp, TrendingDown, Clock, Search, Trash2, Edit2 } from 'lucide-react';
+import { useGetJournalEntriesQuery, useAddJournalEntryMutation, useDeleteJournalEntryMutation, useUpdateJournalEntryMutation, useGetForexRatesQuery } from '../store/api';
 
 interface JournalEntry {
   _id?: string;
@@ -23,6 +23,7 @@ interface JournalEntry {
 export default function JournalPage() {
   const { data: journalData } = useGetJournalEntriesQuery();
   const [addJournalEntry] = useAddJournalEntryMutation();
+  const [updateJournalEntry] = useUpdateJournalEntryMutation();
   const [deleteJournalEntry] = useDeleteJournalEntryMutation();
   const { data: forexData } = useGetForexRatesQuery('USD/INR');
   
@@ -32,6 +33,7 @@ export default function JournalPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     symbol: '',
@@ -89,8 +91,13 @@ export default function JournalPage() {
       notes: form.notes
     };
 
-    await addJournalEntry(newEntry).unwrap();
+    if (editingId) {
+      await updateJournalEntry({ id: editingId, body: newEntry }).unwrap();
+    } else {
+      await addJournalEntry(newEntry).unwrap();
+    }
     setShowForm(false);
+    setEditingId(null);
     setForm({
       symbol: '', type: 'LONG', currency: 'INR', multiplier: '1', entryPrice: '', exitPrice: '', quantity: '', setup: 'Breakout', emotion: 'Neutral', notes: ''
     });
@@ -149,7 +156,7 @@ export default function JournalPage() {
       {/* New Trade Form */}
       {showForm && (
         <div className="bg-dash-elevated p-6 rounded-xl border border-dash-border shadow-sm animate-in fade-in slide-in-from-top-4 duration-300">
-          <h2 className="text-[16px] font-semibold text-dash-text-primary mb-4 border-b border-dash-border pb-3">New Trade Entry</h2>
+          <h2 className="text-[16px] font-semibold text-dash-text-primary mb-4 border-b border-dash-border pb-3">{editingId ? 'Edit Trade Entry' : 'New Trade Entry'}</h2>
           <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <div>
@@ -223,7 +230,7 @@ export default function JournalPage() {
             </div>
 
             <div className="md:col-span-2 lg:col-span-4 flex justify-end gap-3 mt-2">
-              <button type="button" onClick={() => setShowForm(false)} className="px-5 py-2 rounded-lg text-dash-text-secondary hover:bg-dash-card transition-colors text-[14px] font-medium">Cancel</button>
+              <button type="button" onClick={() => { setShowForm(false); setEditingId(null); setForm({ symbol: '', type: 'LONG', currency: 'INR', multiplier: '1', entryPrice: '', exitPrice: '', quantity: '', setup: 'Breakout', emotion: 'Neutral', notes: '' }); }} className="px-5 py-2 rounded-lg text-dash-text-secondary hover:bg-dash-card transition-colors text-[14px] font-medium">Cancel</button>
               <button type="submit" className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-[14px] font-medium">Save Trade</button>
             </div>
           </form>
@@ -294,6 +301,25 @@ export default function JournalPage() {
                                         <div className="flex flex-col items-end justify-start min-w-[120px]">
                       <div className="flex items-center gap-3 mb-1">
                         <span className="text-[12px] text-dash-text-muted">Net P&L</span>
+                        <button onClick={() => {
+                          setEditingId(entry._id || entry.id!);
+                          setForm({
+                            symbol: entry.symbol,
+                            type: entry.type,
+                            currency: entry.currency || 'INR',
+                            multiplier: (entry.multiplier || 1).toString(),
+                            entryPrice: entry.entryPrice.toString(),
+                            exitPrice: entry.exitPrice.toString(),
+                            quantity: entry.quantity.toString(),
+                            setup: entry.setup || 'Breakout',
+                            emotion: entry.emotion || 'Neutral',
+                            notes: entry.notes || ''
+                          });
+                          setShowForm(true);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }} className="text-blue-500/70 hover:text-blue-500 transition-colors p-1" title="Edit">
+                           <Edit2 className="w-4 h-4" />
+                        </button>
                         <button onClick={() => handleDelete(entry._id || entry.id!)} className="text-red-500/70 hover:text-red-500 transition-colors p-1" title="Delete">
                            <Trash2 className="w-4 h-4" />
                         </button>
