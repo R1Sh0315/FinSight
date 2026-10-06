@@ -19,6 +19,7 @@ import { TrendingUp, Briefcase, Wallet, PieChart, Activity, Search, Plus, X, Bar
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { MiniChart } from 'react-ts-tradingview-widgets';
 import AdvancedChartWidget from '../components/AdvancedChartWidget';
 
 export default function HomePage() {
@@ -369,7 +370,7 @@ export default function HomePage() {
             </h3>
             <div className="relative group flex items-center">
               <Info className="w-4 h-4 text-dash-text-muted cursor-help hover:text-dash-text-primary transition-colors" />
-              <div className="absolute top-full left-0 mt-2 w-[280px] p-3 bg-[#131722] border border-dash-border rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-[12px] text-dash-text-secondary pointer-events-none">
+              <div className="absolute top-full left-0 mt-2 w-[280px] p-3 bg-[#131722] border border-dash-border rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 text-[12px] text-dash-text-secondary ">
                 <p className="font-semibold text-dash-text-primary mb-1">How to log a trade:</p>
                 <ul className="list-disc pl-4 space-y-1">
                   <li><strong>Symbol:</strong> Ticker (e.g., TCS, AAPL, EURUSD)</li>
@@ -386,7 +387,7 @@ export default function HomePage() {
               <div className="flex-1 min-w-[120px]">
                 <label className="block text-[12px] font-medium text-dash-text-muted mb-1.5 ml-1">Symbol</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center ">
                     <Search className="h-4 w-4 text-dash-text-muted" />
                   </div>
                   <input type="text" placeholder="e.g. TCS or Navi ELSS" className="w-full pl-9 pr-3 h-10 text-[14px] bg-dash-bg border border-dash-border rounded-lg text-dash-text-primary focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-shadow uppercase" value={form.symbol} onChange={e => { setForm({...form, symbol: e.target.value}); setShowSymbolDropdown(true); }} onFocus={() => setShowSymbolDropdown(true)} onBlur={() => setTimeout(() => setShowSymbolDropdown(false), 200)} required />
@@ -797,7 +798,27 @@ export default function HomePage() {
 
       {/* RIGHT COLUMN: Watchlist & Top Growth (30-32%) */}
       <div className="lg:col-span-4 flex flex-col gap-6">
-        <div className="bg-dash-card rounded-xl border border-dash-border shadow-sm overflow-hidden h-full flex flex-col">
+
+        {/* Commodities / Precious Metals */}
+        <div className="bg-dash-card rounded-xl border border-dash-border shadow-sm overflow-hidden p-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="w-5 h-5 text-yellow-500" />
+            <h3 className="text-[16px] font-bold text-dash-text-primary">Precious Metals (Live)</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
+              <MiniChart colorTheme="dark" symbol="MCX:GOLD1!" width="100%" height="100%" dateRange="1M" isTransparent={true} />
+            </div>
+            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
+              <MiniChart colorTheme="dark" symbol="MCX:SILVER1!" width="100%" height="100%" dateRange="1M" isTransparent={true} />
+            </div>
+            <div className="h-[140px] rounded-lg overflow-hidden border border-dash-border ">
+              <MiniChart colorTheme="dark" symbol="TVC:PLATINUM" width="100%" height="100%" dateRange="1M" isTransparent={true} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-dash-card rounded-xl border border-dash-border shadow-sm overflow-hidden flex-1 flex flex-col">
           <div className="flex border-b border-dash-border bg-dash-header/50">
             <button 
               onClick={() => setActiveTab('watchlist')}
@@ -820,7 +841,7 @@ export default function HomePage() {
               <div className="p-4 border-b border-dash-border bg-dash-bg/50">
                 <div ref={searchRef} className="relative">
                   <form onSubmit={handleAddWatchlist} className="relative flex items-center">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center ">
                       <Search className="h-4 w-4 text-dash-text-muted" />
                     </div>
                     <input 
