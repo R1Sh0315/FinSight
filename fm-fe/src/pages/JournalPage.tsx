@@ -180,7 +180,7 @@ export default function JournalPage() {
             </div>
             
             <div>
-              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">{form.currency === 'USD' ? 'Contract Size (Units)' : 'Multiplier'}</label>
+              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1" title="How many units in 1 lot? (e.g. 100000 for standard FX)">{form.currency === 'USD' ? 'Units per 1 Lot' : 'Multiplier'}</label>
               <input type="number" required placeholder="1" className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.multiplier} onChange={e => setForm({...form, multiplier: e.target.value})} />
             </div>
             
@@ -278,7 +278,7 @@ export default function JournalPage() {
                       <div className="flex flex-wrap gap-x-8 gap-y-2 mt-3 mb-4 text-[13px]">
                         <div><span className="text-dash-text-muted">Entry:</span> <span className="text-dash-text-primary font-medium">{entry.currency === 'USD' ? '$' : '₹'}{entry.entryPrice}</span></div>
                         <div><span className="text-dash-text-muted">Exit:</span> <span className="text-dash-text-primary font-medium">{entry.currency === 'USD' ? '$' : '₹'}{entry.exitPrice}</span></div>
-                        <div><span className="text-dash-text-muted">{entry.currency === 'USD' ? 'Lots:' : 'Qty:'}</span> <span className="text-dash-text-primary font-medium">{entry.quantity}</span> <span className="text-[11px] text-dash-text-muted ml-1">(x{entry.multiplier})</span></div>
+                        <div><span className="text-dash-text-muted">{entry.currency === 'USD' ? 'Lots:' : 'Qty:'}</span> <span className="text-dash-text-primary font-medium">{entry.quantity}</span> {entry.multiplier !== 1 && <span className="text-[11px] text-dash-text-muted ml-1" title="Units per lot">(x{entry.multiplier})</span>}</div>
                         <div><span className="text-dash-text-muted">Setup:</span> <span className="text-dash-text-primary font-medium">{entry.setup}</span></div>
                         <div className="flex items-center gap-1"><span className="text-dash-text-muted">Emotion:</span> <span className="text-dash-text-primary font-medium flex items-center gap-1"><Tag className="w-3 h-3" /> {entry.emotion}</span></div>
                       </div>
