@@ -128,6 +128,27 @@ export const api = createApi({
       query: () => 'market/metals',
       transformResponse: (response: any) => response.data,
     }),
+
+    // Journal Endpoints
+    getJournalEntries: builder.query<{ success: boolean; data: any[] }, void>({
+      query: () => 'journal',
+      providesTags: ['Journal'] as any
+    }),
+    addJournalEntry: builder.mutation<any, any>({
+      query: (body) => ({
+        url: 'journal',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Journal'] as any
+    }),
+    deleteJournalEntry: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `journal/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Journal'] as any
+    }),
     getForexRates: builder.query<{ data: Array<{ pair: string, rate: number, change: number, changePercent: number, source: string }> }, string | undefined>({
       query: (pairs) => pairs ? `forex/rates?pairs=${pairs}` : 'forex/rates',
     }),
@@ -190,6 +211,9 @@ export const {
   useAnalyzeCompanyMutation,
   useSearchSymbolsQuery,
   useGetMetalsQuery,
+  useGetJournalEntriesQuery,
+  useAddJournalEntryMutation,
+  useDeleteJournalEntryMutation,
   useGetForexRatesQuery,
   useGetCommonForexPairsQuery,
   useGetEconomicCalendarQuery,

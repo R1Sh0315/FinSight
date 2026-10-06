@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { BookOpen, Plus, Tag, TrendingUp, TrendingDown, Clock, Search } from 'lucide-react';
+import { BookOpen, Plus, Tag, TrendingUp, TrendingDown, Clock, Search, Trash2 } from 'lucide-react';
+import { useGetJournalEntriesQuery, useAddJournalEntryMutation, useDeleteJournalEntryMutation, useGetForexRatesQuery } from '../store/api';
 
 interface JournalEntry {
-  id: string;
+  _id?: string;
+  id?: string;
   date: string;
   symbol: string;
   type: 'LONG' | 'SHORT';
+  currency: 'INR' | 'USD';
+  multiplier: number;
   entryPrice: number;
   exitPrice: number;
   quantity: number;
@@ -17,13 +21,23 @@ interface JournalEntry {
 
 // Temporary local state for Journal until backend is integrated
 export default function JournalPage() {
-  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const { data: journalData } = useGetJournalEntriesQuery();
+  const [addJournalEntry] = useAddJournalEntryMutation();
+  const [deleteJournalEntry] = useDeleteJournalEntryMutation();
+  const { data: forexData } = useGetForexRatesQuery('USD/INR');
+  
+  const entries: JournalEntry[] = journalData?.data || [];
+  const inrRateObj = forexData?.data?.find(f => f.pair === 'USD/INR');
+  const inrRate = inrRateObj ? inrRateObj.rate : 84;
+
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   const [form, setForm] = useState({
     symbol: '',
     type: 'LONG' as 'LONG' | 'SHORT',
+    currency: 'INR' as 'INR' | 'USD',
+    multiplier: '1',
     entryPrice: '',
     exitPrice: '',
     quantity: '',
@@ -32,22 +46,22 @@ export default function JournalPage() {
     notes: ''
   });
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const entryPrice = Number(form.entryPrice);
     const exitPrice = Number(form.exitPrice);
     const qty = Number(form.quantity);
+    const mult = Number(form.multiplier);
     
     // Calculate P&L
-    const pnl = form.type === 'LONG' 
-      ? (exitPrice - entryPrice) * qty 
-      : (entryPrice - exitPrice) * qty;
+    const rawDiff = form.type === 'LONG' ? (exitPrice - entryPrice) : (entryPrice - exitPrice);
+    const pnl = rawDiff * qty * mult;
 
-    const newEntry: JournalEntry = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toISOString(),
+    const newEntry = {
       symbol: form.symbol.toUpperCase(),
       type: form.type,
+      currency: form.currency,
+      multiplier: mult,
       entryPrice,
       exitPrice,
       quantity: qty,
@@ -57,18 +71,26 @@ export default function JournalPage() {
       notes: form.notes
     };
 
-    setEntries([newEntry, ...entries]);
+    await addJournalEntry(newEntry).unwrap();
     setShowForm(false);
     setForm({
-      symbol: '', type: 'LONG', entryPrice: '', exitPrice: '', quantity: '', setup: 'Breakout', emotion: 'Neutral', notes: ''
+      symbol: '', type: 'LONG', currency: 'INR', multiplier: '1', entryPrice: '', exitPrice: '', quantity: '', setup: 'Breakout', emotion: 'Neutral', notes: ''
     });
   };
 
-  const totalPnL = entries.reduce((acc, curr) => acc + curr.pnl, 0);
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete this journal entry?')) {
+      await deleteJournalEntry(id).unwrap();
+    }
+  };
+
+  // Convert total to INR
+  const totalPnL = entries.reduce((acc, curr) => {
+    const val = curr.currency === 'USD' ? curr.pnl * inrRate : curr.pnl;
+    return acc + val;
+  }, 0);
   const winRate = entries.length ? (entries.filter(e => e.pnl > 0).length / entries.length) * 100 : 0;
-
   const filteredEntries = entries.filter(e => e.symbol.includes(searchTerm.toUpperCase()));
-
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -130,15 +152,28 @@ export default function JournalPage() {
               <input type="number" required placeholder="0" className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} />
             </div>
 
-            <div className="hidden lg:block"></div> {/* Spacer */}
 
             <div>
-              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Entry Price (₹)</label>
+              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Currency</label>
+              <select className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.currency} onChange={e => setForm({...form, currency: e.target.value as any})}>
+                <option value="INR">INR (₹)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Multiplier (Lot size/units)</label>
+              <input type="number" required placeholder="1" className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.multiplier} onChange={e => setForm({...form, multiplier: e.target.value})} />
+            </div>
+            
+            <div>
+              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Entry Price ({form.currency === 'USD' ? '$' : '₹'})</label>
+
               <input type="number" required step="any" placeholder="0.00" className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.entryPrice} onChange={e => setForm({...form, entryPrice: e.target.value})} />
             </div>
 
             <div>
-              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Exit Price (₹)</label>
+              <label className="block text-[12px] text-dash-text-muted mb-1 ml-1">Exit Price ({form.currency === 'USD' ? '$' : '₹'})</label>
               <input type="number" required step="any" placeholder="0.00" className="w-full h-10 px-3 bg-dash-card border border-dash-border rounded-lg text-dash-text-primary focus:ring-1 focus:ring-blue-500 outline-none text-[14px]" value={form.exitPrice} onChange={e => setForm({...form, exitPrice: e.target.value})} />
             </div>
 
@@ -223,8 +258,8 @@ export default function JournalPage() {
                       </div>
                       
                       <div className="flex flex-wrap gap-x-8 gap-y-2 mt-3 mb-4 text-[13px]">
-                        <div><span className="text-dash-text-muted">Entry:</span> <span className="text-dash-text-primary font-medium">₹{entry.entryPrice}</span></div>
-                        <div><span className="text-dash-text-muted">Exit:</span> <span className="text-dash-text-primary font-medium">₹{entry.exitPrice}</span></div>
+                        <div><span className="text-dash-text-muted">Entry:</span> <span className="text-dash-text-primary font-medium">{entry.currency === 'USD' ? '$' : '₹'}{entry.entryPrice}</span></div>
+                        <div><span className="text-dash-text-muted">Exit:</span> <span className="text-dash-text-primary font-medium">{entry.currency === 'USD' ? '$' : '₹'}{entry.exitPrice}</span></div>
                         <div><span className="text-dash-text-muted">Qty:</span> <span className="text-dash-text-primary font-medium">{entry.quantity}</span></div>
                         <div><span className="text-dash-text-muted">Setup:</span> <span className="text-dash-text-primary font-medium">{entry.setup}</span></div>
                         <div className="flex items-center gap-1"><span className="text-dash-text-muted">Emotion:</span> <span className="text-dash-text-primary font-medium flex items-center gap-1"><Tag className="w-3 h-3" /> {entry.emotion}</span></div>
@@ -238,12 +273,22 @@ export default function JournalPage() {
                     </div>
 
                     {/* Right: P&L */}
-                    <div className="flex flex-col items-end justify-start min-w-[120px]">
-                      <span className="text-[12px] text-dash-text-muted mb-1">Net P&L</span>
+                                        <div className="flex flex-col items-end justify-start min-w-[120px]">
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="text-[12px] text-dash-text-muted">Net P&L</span>
+                        <button onClick={() => handleDelete(entry._id || entry.id!)} className="text-red-500/70 hover:text-red-500 transition-colors p-1" title="Delete">
+                           <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                       <span className={`text-[20px] font-bold flex items-center gap-1 ${entry.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                         {entry.pnl >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                        {entry.pnl >= 0 ? '+' : '-'}₹{Math.abs(entry.pnl).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        {entry.pnl >= 0 ? '+' : '-'}{entry.currency === 'USD' ? '$' : '₹'}{Math.abs(entry.pnl).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </span>
+                      {entry.currency === 'USD' && (
+                        <span className="text-[11px] text-dash-text-muted mt-1">
+                          ~₹{(Math.abs(entry.pnl) * inrRate).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </span>
+                      )}
                     </div>
 
                   </div>

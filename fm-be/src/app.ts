@@ -10,6 +10,7 @@ import investmentRoutes from "./modules/investment/investment.routes.js";
 import marketRoutes from "./modules/market/market.routes.js";
 import paperTradeRoutes from "./modules/paperTrade/paperTrade.routes.js";
 import forexRoutes from "./modules/forex/forex.routes.js";
+import journalRoutes from "./modules/journal/journal.routes.js";
 
 dotenv.config();
 
@@ -63,6 +64,7 @@ app.use("/api/v1/investments", investmentRoutes);
 app.use("/api/v1/market", marketRoutes);
 app.use("/api/v1/papertrades", paperTradeRoutes);
 app.use("/api/v1/forex", forexRoutes);
+app.use("/api/v1/journal", journalRoutes);
 
 const PORT = process.env.PORT || 5000;
 

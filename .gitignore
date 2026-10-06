@@ -18,3 +18,5 @@ build/
 .idea/
 *.log
 test_post.js
+.vercel
+.env*
