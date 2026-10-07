@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/HomePage';
 import CompanyDetailsPage from './pages/CompanyDetailsPage';
@@ -79,7 +79,13 @@ function Layout({ children }: { children: React.ReactNode }) {
     return localStorage.getItem('theme') === 'dark';
   });
 
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(window.innerWidth >= 1024);
+  const location = useLocation();
+  React.useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, [location.pathname]);
 
   React.useEffect(() => {
     if (darkMode) {
@@ -103,8 +109,21 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-dash-bg text-dash-text-primary font-sans transition-colors duration-200 overflow-hidden">
       
       {/* Sidebar */}
+      {/* Mobile Overlay */}
+      {user && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
       {user && (
-        <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} relative bg-dash-header border-r border-dash-border flex flex-col transition-all duration-300 z-20 shrink-0`}>
+        <aside className={`
+          fixed inset-y-0 left-0 z-50 lg:relative lg:translate-x-0
+          ${isSidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64 lg:w-20'}
+          bg-dash-header border-r border-dash-border flex flex-col transition-all duration-300 shrink-0
+        `}>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="absolute -right-3 top-6 bg-dash-elevated border border-dash-border rounded-full p-1 text-dash-text-secondary hover:text-dash-text-primary z-30 shadow-md hidden sm:flex"
@@ -195,7 +214,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             {user && (
               <button 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors sm:hidden"
+                className="p-2 -ml-2 rounded-lg text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-elevated transition-colors lg:hidden"
                 title="Toggle Sidebar"
               >
                 <Menu className="w-5 h-5" />
